@@ -41,8 +41,12 @@ object BorderExt extends Kernels {
 
 	//if x is at the end of the row, reset x and move down 1 row for y
 	if(x == (width - 1)) {
-		y += 1
 		x = 0
+		if(y == (height - 1)) {
+			y = 0
+		} else {
+			y += 1
+		}
 	} else {
 		x += 1
 	}
