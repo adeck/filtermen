@@ -2,6 +2,10 @@ import scalapipe._
 import scalapipe.dsl._
 
 object BorderExt extends Kernels {
+	/*Questions that need answering:
+		Can we run this block in while loop instead of using implicit looping as much as we do?
+			How much faster would a while loop be, if possible?
+	*/
 
 	val dataIn = input(UNSIGNED32)
 	val dataOut = output(UNSIGNED32)
