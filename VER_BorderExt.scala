@@ -43,5 +43,7 @@ object BorderExt extends Kernels {
 	if(x == (width - 1)) {
 		y += 1
 		x = 0
+	} else {
+		x += 1
 	}
 }
