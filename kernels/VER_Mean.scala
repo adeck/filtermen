@@ -1,5 +1,7 @@
 import scalapipe.dsl._
 
+//needs to be for individual pixels, not a mean for all of the pixels
+
 object Mean extends Kernel {
 
 	val pixelData = input(UNSIGNED32)
