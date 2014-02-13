@@ -1,15 +1,14 @@
-import scalapipe._
 import scalapipe.dsl._
 
-object Mean extends Kernels {
+object Mean extends Kernel {
 
 	val pixelData = input(UNSIGNED32)
 	val mean = output(FLOAT32)
 
 	val outputCount = config(UNSIGNED32, 'outputCount, 1000)
 
-	val count = local(UNSIGED32, 0)
-	val state = local(UNSIGED32, 0)
+	val count = local(UNSIGNED32, 0)
+	val state = local(UNSIGNED32, 0)
 	val tempMean = local(FLOAT32, 0)
 	val temp = local(FLOAT32, 0)
 
