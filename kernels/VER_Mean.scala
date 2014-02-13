@@ -25,7 +25,7 @@ object Mean extends Kernels {
 			if(count < outPutCount) {
 				temp = tempMean * count
 				count += 1
-				temp += (FLOAT32) pixelData
+				temp += cast(pixelData, FLOAT32)
 				tempMean = temp / count
 			} else {
 				mean = tempMean
