@@ -6,10 +6,10 @@ object RunLengthEncode extends Kernel{
 	val encoded_data = output(UNSIGNED32)
 	
 	// Don't run encode across frames
-	val pixelCount = config(UNSIGNED32, 'pixelCount, 1600)
+	val pixelCount = config(UNSIGNED16, 'pixelCount, 1600)
 
-	val count = local(UNSIGNED32, 0)
-	val runlength = local(UNSIGNED32, 0)
+	val count = local(UNSIGNED16, 0)
+	val runlength = local(UNSIGNED16, 0)
 	val prevZero = local(UNSIGNED8, 0) //is there a bool type? 
 	val pixel = local(UNSIGNED32,0) // want to set this local variable to pixel input 
 	pixel = pixelData
