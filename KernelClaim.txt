@@ -1,9 +1,0 @@
-Dave:
-
-VER_BorderExt.scala
-VER_Mean.scala
-VER_StdDev.scala
-
-Steve:
-
-Run Length Encoding (not yet implemented)
