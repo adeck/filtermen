@@ -113,9 +113,9 @@ object FirstHalfTest extends App {
 
 			val count = local(UNSIGNED32, 0)
 			val means = local(Vector(FLOAT32, pixels))
-			val stdDevs = local(Vector(FLOAT32, pixels))
+			val stdDevs0 = local(Vector(FLOAT32, pixels))
+			val stdDevs1 = local(Vector(FLOAT32, pixels))
 			val temp = local(FLOAT32, 0)
-			val timeCount = local(UNSIGNED8, 0)
 
 			val state = local(UNSIGNED8, 0)
 
@@ -127,24 +127,9 @@ object FirstHalfTest extends App {
 					count = 1
 					i = 0
 					while(i < pixels) {
-						if(timeCount == 0) {
-							//means(i) = 60
-							means(i) = mean
-						} else {
-							means(i) = mean
-						}
-						stdDevs(i) = 0
+						stdDevs0(i) = 0
+						stdDevs1(i) = 0
 						i += 1
-					}
-					if(timeCount == 1) {
-						i = 0
-						while(i < pixels) {
-							//means(i) = mean
-							i += 1
-						}
-					}
-					if(timeCount == 0 || timeCount == 1) {
-						timeCount += 1
 					}
 					state = 1
 				}
@@ -154,17 +139,26 @@ object FirstHalfTest extends App {
 						i = 0
 						while(i < pixels) {
 							temp = cast(pixelData, FLOAT32)
-							stdDevs(i) += ((temp - means(i)) * (temp - means(i)))
+							stdDevs0(i) += temp * temp
+							stdDevs1(i) += temp
 							i += 1
 						}
 						count += 1
 					} else {
 						i = 0
 						while(i < pixels) {
-							stdDevs(i) = stdDevs(i) / (outputCount - 1)
-							stdDevs(i) = sqrt(stdDevs(i))
-							stdDev0 = stdDevs(i)
-							stdDev1 = stdDevs(i)
+							means(i) = mean
+							i += 1
+						}
+
+						i = 0
+						while(i < pixels) {
+							stdDevs0(i) -= (2 * means(i) * stdDevs1(i))
+							stdDevs0(i) += outputCount * means(i) * means(i)
+							stdDevs0(i) = stdDevs0(i) / (outputCount - 1)
+							stdDevs0(i) = sqrt(stdDevs0(i))
+							stdDev0 = stdDevs0(i)
+							stdDev1 = stdDevs0(i)
 							i += 1
 						}
 						state = 0
@@ -215,7 +209,7 @@ object FirstHalfTest extends App {
 		}
 
 		val app = new Application {
-			param('queueDepth, 2000000)
+			param('queueDepth, 20000)
 			//val iterations = 1600
 			//val width = 5
 			//val height = 5
