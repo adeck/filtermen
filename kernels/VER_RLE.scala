@@ -1,9 +1,9 @@
 import scalapipe.dsl._
 
 object RunLengthEncode extends Kernel{
-	
-	val pixelData = input(UNSIGNED32)
-	val encoded_data = output(UNSIGNED32)
+	//assumption: pixel data is unsigned16
+	val pixelData = input(UNSIGNED16)
+	val encoded_data = output(UNSIGNED16)
 	
 	// Don't run encode across frames
 	val pixelCount = config(UNSIGNED16, 'pixelCount, 1600)
