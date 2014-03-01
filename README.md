@@ -14,3 +14,5 @@ For every kernel written in this repository, if that kernel is intended for VERI
 ## Pipeline Structure: ##
 
 Each of the individual kernels should be described in its own file. Main files (i.e. VER\_Main.scala and PolPipe\_Main.scala) will act as final application description importing the individual kernels as necessary.
+
+Kernels should go in the 'kernels' directory, and tests for each kernel should go in 'tests'. New kernels should enumerate the config parameters they use in a comment at the top of the file, and for any parameter with a vague name, the meaning of that parameter should be clarified. This is encouraged so that we don't end up needing to define 40 different cryptically-named parameters for the same information in each main file.
