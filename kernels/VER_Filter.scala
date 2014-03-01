@@ -1,5 +1,11 @@
 import scalapipe._
 
+// Relies on the following config parameters:
+//    width
+//    height
+//    outputCount   --    The number of frames across which the standard
+//                        thresholds should be taken.
+
 object PrimaryFilter extends Kernel
 {
   // ------== Data sigs ==------
@@ -12,15 +18,16 @@ object PrimaryFilter extends Kernel
 
   // ------== Parameters ==------
   // The number of frames between reloading threshold values
-  val refreshRate = config(UNSIGNED32, `refreshRate, 1000)
+  val refreshRate = config(UNSIGNED32, 'outputCount, 1000)
   // Adding 2 because border extension.
-  val width = 2 + config(UNSIGNED32, `width, 40)
-  val height = 2 + config(UNSIGNED32, `width, 40)
+  val width = 2 + config(UNSIGNED32, 'width, 40)
+  val height = 2 + config(UNSIGNED32, 'width, 40)
   
   // ------== Locals ==------
   // The pixel currently being read in, not the pixel under scrutiny
   val curPixel = local(UNSIGNED32, 0)
-  // The pixel under scrutiny
+  // The pixel under scrutiny; i.e. the pixel in the middle
+  //  of the 3x3 block being processed. 
   val mainPixel = local(UNSIGNED32, 0)
   // Coordinates of pixel being read in
   val x = local(UNISGNED32, 0)
@@ -29,13 +36,17 @@ object PrimaryFilter extends Kernel
   //    values should be read in.
   val frameCnt = local(UNSIGNED32, 0)
 
-  val vectorSize = config(UNSIGNED16, 'vectorSize, width * 2 + 2)
+  // TODO -- figure out which line will work in scalapipe and burninate
+  //          the line that fails.
+  //val vectorSize = config(UNSIGNED16, 'vectorSize, width * 2 + 2)
+  val vectorSize = width * 2 + 2;
   // Circular buffer of the last vectorSize pixels read in.
   val pixelBuf = local(Vector(UNSIGNED32, vectorSize))
   // Pointer into the circular buffer.
   val bufPtr = local(UNSIGNED8, 0)
 
-  // main pixel location
+  // the location in the circular buffer of the pixel in the middle
+  //  of the 3x3 block being processed. 
   mainPixLoc = local(UNSIGNED32, 0)
   // The buffers of low and high thresholding values foreach pixel
   val lowThreshBuf = local(Vector(UNSIGNED32, width * height))
@@ -66,6 +77,9 @@ object PrimaryFilter extends Kernel
   //        bufPtr + bufSize - 2  // bottom row left
   //        bufPtr + bufSize - 1, // bottom row middle
   //        curPixel              // bottom row right
+
+  // If this ends up being a bottleneck or using a multiplier,
+  //  it only really modularly increments, so that can be changed.
   mainPixLoc = (y - 1) * width + (x - 1)
   if (y > 1 && x > 1)
   {
@@ -74,6 +88,11 @@ object PrimaryFilter extends Kernel
       pixelOut = 0
     else if 
       ( 
+        // The numbers here allow me to easily check that I'm covering the
+        //  entire 3x3 box:
+        //    1 2 3
+        //    4 5 6
+        //    7 8 9
         mainPixel > highThreshBuf (mainPixLoc) || // 5
         curPixel > highThreshBuf (mainPixLoc + width + 1) || // 9
         pixelBuf (bufPtr) > highThreshBuf (mainPixLoc - width - 1) || // 1
@@ -84,6 +103,7 @@ object PrimaryFilter extends Kernel
         pixelBuf ((bufPtr + width + 2) % vectorSize) > highThreshBuf (mainPixLoc + 1) || // 6
         pixelBuf ((bufPtr + vectorSize - 1) % vectorSize) > highThreshBuf (mainPixLoc + width - 1) || // 7
         pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) || // 8
+        // curPixel, 9
       )
   {
     pixelOut = mainPixel

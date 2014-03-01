@@ -1,6 +1,17 @@
 import scalapipe.dsl._
 
-//needs to be for individual pixels, not a mean for all of the pixels
+// Relies on the following config parameters:
+//    outputCount   --    The number of frames across which the mean
+//                        should be taken.
+
+// Gives the mean for each individual pixel across an
+// outputCount number of 'frames', not a mean for all of the pixels
+// in one frame.
+//
+// It is worth noting that, as currently written, this hard-codes
+// the magic number '1600' for frame size, rather than using
+// config parameters. This is done because the mean module is expected
+// to only be used to process 40x40 pixel images.
 
 object Mean extends Kernel {
 
