@@ -15,7 +15,7 @@ It is as follows:
 
 * pipeline\_name
   * main
-    contains all code necessary for the complete application, including
+    Contains all code necessary for the complete application, including
     helpful functions and the entry point.
     * kernels
       Contains all the kernels, or "functional blocks" of the application.
