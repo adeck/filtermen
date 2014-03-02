@@ -1,13 +1,19 @@
 package veritas.kernels
 
-import scalapipe._
-import scalapipe.dsl.Type // I made this parameterizable.
+import scalapipe.dsl._
+import scalapipe.kernels._
 
 // Relies on the following config parameters:
 //    width
 //    height
 //    outputCount   --    The number of frames across which the standard
 //                        thresholds should be taken.
+
+// TODO -- Currently, it uses a mix of magic numbers and width and height 
+//          parameters due to type constraints and a lack of casting.
+//         These need to be removed, because as is they mean that
+//          width and height are both _required_ to be 40. Also, as is
+//          the code isn't DRY. But it compiles, anyway.
 
 class PrimaryFilter(_name:String) extends Kernel(_name:String)
 {
@@ -35,16 +41,18 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   //  of the 3x3 block being processed. 
   val mainPixel = local(typ, 0)
   // Coordinates of pixel being read in
-  val x = local(UNISGNED32, 0)
+  val x = local(UNSIGNED32, 0)
   val y = local(UNSIGNED32, 0)
   // Index of current frame; used to determine when new threshold
   //    values should be read in.
   val frameCnt = local(UNSIGNED32, 0)
 
-  // TODO -- figure out which line will work in scalapipe and burninate
-  //          the line that fails.
-  //val vectorSize = config(UNSIGNED16, 'vectorSize, width * 2 + 2)
-  val vectorSize = width * 2 + 2;
+  // TODO FIXME -- 40 == row width, however, there is no point in having
+  //          a 'width' parameter if I put this magic number in.
+  val vectorSize = 40 * 2 + 2
+  // TODO FIXME -- This _should_ be width * height. Unfortunately, it's
+  //          not being nice about that.
+  val imgSize = 40 * 40
   // Circular buffer of the last vectorSize pixels read in.
   val pixelBuf = local(Vector(typ, vectorSize))
   // Pointer into the circular buffer.
@@ -52,10 +60,10 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
 
   // the location in the circular buffer of the pixel in the middle
   //  of the 3x3 block being processed. 
-  mainPixLoc = local(UNSIGNED32, 0)
+  val mainPixLoc = local(UNSIGNED32, 0)
   // The buffers of low and high thresholding values foreach pixel
-  val lowThreshBuf = local(Vector(typ, width * height))
-  val highThreshBuf = local(Vector(typ, width * height))
+  val lowThreshBuf = local(Vector(typ, imgSize))
+  val highThreshBuf = local(Vector(typ, imgSize))
 
   // ------== Main Loop body ==------
 
@@ -107,7 +115,7 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
               // mainPixel, 5
         pixelBuf ((bufPtr + width + 2) % vectorSize) > highThreshBuf (mainPixLoc + 1) || // 6
         pixelBuf ((bufPtr + vectorSize - 1) % vectorSize) > highThreshBuf (mainPixLoc + width - 1) || // 7
-        pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) || // 8
+        pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) // 8
         // curPixel, 9
       )
     {
