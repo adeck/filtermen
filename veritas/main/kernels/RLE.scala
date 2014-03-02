@@ -1,3 +1,4 @@
+package veritas.kernels
 import scalapipe.dsl._
 
 // Relies on the following config parameters:
