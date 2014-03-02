@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# A quick script to remove bits of filename.
+#
+
+regex=VER_
+
+for i in *
+do
+  mv "$i" "$(echo -n "$i" | sed "s/$regex//g")"
+done
+

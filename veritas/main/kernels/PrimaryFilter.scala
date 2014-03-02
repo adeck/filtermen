@@ -1,4 +1,7 @@
+package kernels
+
 import scalapipe._
+import scalapipe.dsl.Type // I made this parameterizable.
 
 // Relies on the following config parameters:
 //    width
@@ -6,15 +9,17 @@ import scalapipe._
 //    outputCount   --    The number of frames across which the standard
 //                        thresholds should be taken.
 
-object PrimaryFilter extends Kernel
+class PrimaryFilter(_name:String) extends Kernel(_name:String)
 {
+  // to make this thing type parameterizable.
+  val typ = UNSIGNED16
   // ------== Data sigs ==------
-  val pixelIn = input(UNSIGNED32)
-  val pixelOut = output(UNSIGNED32)
+  val pixelIn = input(typ)
+  val pixelOut = output(typ)
 
   // ------== Control sigs ==------
-  val lowThreshIn = input(UNSIGNED32)
-  val highThreshIn = input(UNSIGNED32)
+  val lowThreshIn = input(typ)
+  val highThreshIn = input(typ)
 
   // ------== Parameters ==------
   // The number of frames between reloading threshold values
@@ -25,10 +30,10 @@ object PrimaryFilter extends Kernel
   
   // ------== Locals ==------
   // The pixel currently being read in, not the pixel under scrutiny
-  val curPixel = local(UNSIGNED32, 0)
+  val curPixel = local(typ, 0)
   // The pixel under scrutiny; i.e. the pixel in the middle
   //  of the 3x3 block being processed. 
-  val mainPixel = local(UNSIGNED32, 0)
+  val mainPixel = local(typ, 0)
   // Coordinates of pixel being read in
   val x = local(UNISGNED32, 0)
   val y = local(UNSIGNED32, 0)
@@ -41,7 +46,7 @@ object PrimaryFilter extends Kernel
   //val vectorSize = config(UNSIGNED16, 'vectorSize, width * 2 + 2)
   val vectorSize = width * 2 + 2;
   // Circular buffer of the last vectorSize pixels read in.
-  val pixelBuf = local(Vector(UNSIGNED32, vectorSize))
+  val pixelBuf = local(Vector(typ, vectorSize))
   // Pointer into the circular buffer.
   val bufPtr = local(UNSIGNED8, 0)
 
@@ -49,8 +54,8 @@ object PrimaryFilter extends Kernel
   //  of the 3x3 block being processed. 
   mainPixLoc = local(UNSIGNED32, 0)
   // The buffers of low and high thresholding values foreach pixel
-  val lowThreshBuf = local(Vector(UNSIGNED32, width * height))
-  val highThreshBuf = local(Vector(UNSIGNED32, width * height))
+  val lowThreshBuf = local(Vector(typ, width * height))
+  val highThreshBuf = local(Vector(typ, width * height))
 
   // ------== Main Loop body ==------
 
@@ -105,16 +110,16 @@ object PrimaryFilter extends Kernel
         pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) || // 8
         // curPixel, 9
       )
-  {
-    pixelOut = mainPixel
+    {
+      pixelOut = mainPixel
+    }
   }
-}
 
-// ------== Loop update step ==------
+  // ------== Loop update step ==------
 
-// updates frame index
-frameCnt = (frameCnt + 1) % refreshRate
-// updates pixel buffer ptr & pixel buffer
+  // updates frame index
+  frameCnt = (frameCnt + 1) % refreshRate
+  // updates pixel buffer ptr & pixel buffer
   pixelBuf (bufPtr) = curPixel
   bufPtr = (bufPtr + 1) % vectorSize
   // updates x and y pointers
