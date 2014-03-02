@@ -1,4 +1,4 @@
-package kernels
+package veritas.kernels
 
 import scalapipe._
 import scalapipe.dsl.Type // I made this parameterizable.
