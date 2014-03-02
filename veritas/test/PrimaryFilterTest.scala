@@ -8,22 +8,50 @@ import veritas.kernels.PrimaryFilter
 //                helpful, anymore. But... tradition! *shrug*
 object PrimaryFilterTest extends App
 {
-  val uut = new PrimaryFilter("PrimaryFilter")
-  val thresh = new Kernel("_threshold")
+  val imgSize = 1600
+  val UUT = new PrimaryFilter("PrimaryFilter")
+  val Read = new Kernel("_input")
   {
-    // TODO -- extract threshold values
+    val iterations = config(UNSIGNED32, 'iterations, imgSize)
+    val out = output(UNSIGNED16)
+    val fd = local(stdio.FILEPTR, 0)
+    val tmp = local(UNSIGNED16)
+    if (fd == 0)
+    {
+      // TODO -- extract input pixels
+      val fname = "primary_filter_test_pixels.txt"
+      fd = stdio.fopen(fname, "r")
+      if (fd == 0)
+      {
+        stdio.printf("ERROR: Unable to open \"%s\".\n", fname)
+        stdio.exit(-1)
+      }
+    }
+    else
+    {
+      stdio.fscanf(fd, "%d", addr(tmp))
+      out = tmp
+    }
+    if (iterations > 0)
+      iterations -= 1
+    else
+      stop
   }
-  val input = new Kernel("_input")
+  val Print = new Kernel("_output")
   {
-    // TODO -- extract input pixels
-  }
-  val output = new Kernel("_output")
-  {
-    // TODO -- write output pixels
+    val in = input(UNSIGNED16)
+    stdio.printf("%d", in)
   }
   val app = new Application
   {
-    // Hook up the kernels.
+    val iterations = 40
+    val lowThresh = 50
+    val highThresh = 150
+    val in = Read('iterations -> iterations)
+    val out = UUT('width -> 40, 'height -> 40, 'outputCount -> 30,
+                  'pixelIn -> in(0), 
+                  'lowThresh -> lowThresh, 'highThresh -> highThresh)
+    Print(out('pixelOut))
   }
   app.emit("PrimaryFilter")
 }
