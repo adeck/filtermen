@@ -1,3 +1,4 @@
+package kernels
 import scalapipe._
 import scalapipe.dsl._
 

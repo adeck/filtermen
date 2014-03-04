@@ -201,7 +201,7 @@ object FirstHalfTest extends App {
 			temp1 = stdDev
 			temp2 = loThreshold
 			temp3 = hiThreshold
-			stdio.printf("Pixel %u:\tmean:%.2f\tstdDev:\t%.2f\tloThreshold:\t%u\thiThreshold:\t%u\n", count % pixels, temp0,temp1,temp2,temp3)
+			stdio.printf("Pixel %u:\tmean:\t%.2f\tstdDev:\t%.2f\tloThreshold:\t%u\thiThreshold:\t%u\n", count % pixels, temp0,temp1,temp2,temp3)
 			if(count % pixels == (pixels - 1)) {
 				stdio.printf("\n")
 			}
@@ -209,7 +209,7 @@ object FirstHalfTest extends App {
 		}
 
 		val app = new Application {
-			param('queueDepth, 20000)
+			param('queueDepth, 100000)
 			//val iterations = 1600
 			//val width = 5
 			//val height = 5

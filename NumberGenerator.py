@@ -9,14 +9,15 @@ fo = open(outputFile1, "w")
 of = open(outputFile2, "w")
 nums = [0]*256
 noiseMean = 60
-noiseStdDev = 30
+noiseStdDev = 15
 dataMean = 180
 dataStdDev = 10
 
-for i in xrange(0,10000000):
+for i in xrange(0,16000000):
 	threshold = random.random()
 	if threshold <= .05:
-		randomnumber = int(random.gauss(dataMean,dataStdDev))
+		#randomnumber = int(random.gauss(dataMean,dataStdDev))
+		randomnumber = int(random.gauss(noiseMean,noiseStdDev))
 	else:
 		randomnumber = int(random.gauss(noiseMean,noiseStdDev))
 	if randomnumber <= 255 and randomnumber >= 0:
