@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js.gz"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div id="the-filtermen" class="slide section level1">
+<h1>The Filtermen</h1>
+<p>Andrew Deck, David D'Alessandro, Stephen Berul</p>
+<h2 id="what-are-we-doing">What are we doing?</h2>
+<ul>
+<li><em>VERITAS pipeline</em></li>
+<li><em>Polarization pipeline</em></li>
+</ul>
+<h2 id="how-are-we-doing-it">How are we doing it?</h2>
+<ul>
+<li><em>Incrementally</em> - Setting small, acheivable goals.</li>
+<li><em>Modularly</em> - Separating kernels and kernel tests across files, relying on parameters where possible to maintain flexibility. Delegating within the group.</li>
+<li><em>Carefully</em> - Version control, issues, taking full advantage of GitHub's collaborative environment. Recognizing the importance of good testing and documentation. Performing code audits.</li>
+</ul>
+<h2 id="what-have-we-got-done">What have we got done?</h2>
+<ul>
+<li>Mean - Tested!</li>
+<li>StdDev - Tested!</li>
+<li>Threshold (dummy module; works)</li>
+<li>Border Extension - Tested!</li>
+<li>Runlength Encoding - Test written</li>
+<li>Primary Filter Module - Test written</li>
+</ul>
+<h2 id="what-we-still-need-to-do">What we still need to do</h2>
+<ul>
+<li>Functional tests</li>
+<li>Timing tests</li>
+<li>Optimize code</li>
+<li>Implement parallelism</li>
+<li>Documentation of testing</li>
+<li>Documentation</li>
+<li>Testing of documentation</li>
+<li>Fitting everything together</li>
+<li>Removing magic numbers from code</li>
+</ul>
+<p>...And, of course...</p>
+<ul>
+<li>Polarization pipeline</li>
+</ul>
+<p>For specifics on this, both in terms of short- and long-term goals, <a href="https://github.com/adeck/filtermen">follow the project</a>.</p>
+<h2 id="what-we-still-need-to-know">What we still need to know</h2>
+<ul>
+<li>How we'll calculate the threshold values</li>
+<li>Whether the primary filter algorithm is the final one</li>
+<li>Behavior of the data (although we know preliminarily to use randomized gausssians. Which, thanks to David, we have a script to easily generate)</li>
+</ul>
+</div>
+</body>
+</html>
