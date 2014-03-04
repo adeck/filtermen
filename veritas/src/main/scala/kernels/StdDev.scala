@@ -1,3 +1,5 @@
+package veritas.kernels
+
 import scalapipe._
 import scalapipe.dsl._
 
@@ -12,7 +14,8 @@ import scalapipe.dsl._
 // images are expected to be 40x40 pixels, and we expect to
 // use one of these modules per image.
 
-object StdDev extends Kernels {
+class StdDev(_name:String) extends Kernel(_name:String)
+{
 
 	val mean = input(FLOAT32)
 	val pixelData = input(UNSIGNED32)
