@@ -30,6 +30,9 @@
 * Implement parallelism
 * Documentation of testing
 * Documentation
+
+# What we still need to do (cont'd) #
+
 * Testing of documentation
 * Fitting everything together
 * Removing magic numbers from code
