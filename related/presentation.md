@@ -7,12 +7,6 @@
 * _VERITAS pipeline_
 * _Polarization pipeline_
 
-# How are we doing it? #
-
-* _Incrementally_ - Setting small, acheivable goals.
-* _Modularly_ - Separating kernels and kernel tests across files, relying on parameters where possible to maintain flexibility. Delegating within the group.
-* _Carefully_ - Version control, issues, taking full advantage of GitHub's collaborative environment. Recognizing the importance of good testing and documentation. Performing code audits.
-
 # What have we got done? #
 
 * Mean - Tested!
@@ -21,6 +15,12 @@
 * Border Extension - Tested!
 * Runlength Encoding - Test written
 * Primary Filter Module - Test written
+
+# How are we doing it? #
+
+* _Incrementally_ - Setting small, acheivable goals.
+* _Modularly_ - Separating kernels and kernel tests across files, relying on parameters where possible to maintain flexibility. Delegating within the group.
+* _Carefully_ - Version control, issues, taking full advantage of GitHub's collaborative environment. Recognizing the importance of good testing and documentation. Performing code audits.
 
 # What we still need to do #
 
