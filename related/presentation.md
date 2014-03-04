@@ -1,18 +1,19 @@
-# The Filtermen #
-Andrew Deck, David D'Alessandro, Stephen Berul
+% The Filtermen
+% Andrew Deck, David D'Alessandro, Stephen Berul
+% March 4, 2014
 
-## What are we doing? ##
+# What are we doing? #
 
 * _VERITAS pipeline_
 * _Polarization pipeline_
 
-## How are we doing it? ##
+# How are we doing it? #
 
 * _Incrementally_ - Setting small, acheivable goals.
 * _Modularly_ - Separating kernels and kernel tests across files, relying on parameters where possible to maintain flexibility. Delegating within the group.
 * _Carefully_ - Version control, issues, taking full advantage of GitHub's collaborative environment. Recognizing the importance of good testing and documentation. Performing code audits.
 
-## What have we got done? ##
+# What have we got done? #
 
 * Mean - Tested!
 * StdDev - Tested!
@@ -21,7 +22,7 @@ Andrew Deck, David D'Alessandro, Stephen Berul
 * Runlength Encoding - Test written
 * Primary Filter Module - Test written
 
-## What we still need to do ##
+# What we still need to do #
 
 * Functional tests
 * Timing tests
@@ -39,7 +40,7 @@ Andrew Deck, David D'Alessandro, Stephen Berul
 
 For specifics on this, both in terms of short- and long-term goals, [follow the project](https://github.com/adeck/filtermen).
 
-## What we still need to know ##
+# What we still need to know #
 
 * How we'll calculate the threshold values
 * Whether the primary filter algorithm is the final one
