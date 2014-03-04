@@ -17,8 +17,8 @@ import scalapipe.dsl._
 
 class Mean(_name:String) extends Kernel(_name:String)
 {
-
-	val pixelData = input(UNSIGNED32)
+  val typ = UNSIGNED16
+	val pixelData = input(typ)
 	val mean = output(FLOAT32)
 
 	val outputCount = config(UNSIGNED32, 'outputCount, 1000)

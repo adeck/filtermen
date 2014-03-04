@@ -16,9 +16,9 @@ import scalapipe.dsl._
 
 class StdDev(_name:String) extends Kernel(_name:String)
 {
-
+  val typ = UNSIGNED16
 	val mean = input(FLOAT32)
-	val pixelData = input(UNSIGNED32)
+	val pixelData = input(typ)
 	val stdDev = output(FLOAT32)
 
 	val outputCount = config(UNSIGNED32, 'outputCount, 1000)
@@ -37,7 +37,7 @@ class StdDev(_name:String) extends Kernel(_name:String)
 		when(0) {
 			count = 1
 			i = 0
-			while(i < 1600) {
+			while (i < 1600) {
 				means(i) = mean
 				stdDevs(i) = 0
 				i += 1
@@ -46,9 +46,9 @@ class StdDev(_name:String) extends Kernel(_name:String)
 		}
 
 		when(1) {
-			if(count <= outputCount) {
+			if (count <= outputCount) {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					temp = cast(pixelData, FLOAT32)
 					stdDevs(i) += ((temp - means(i)) * (temp - means(i)))
 					i += 1
@@ -56,7 +56,7 @@ class StdDev(_name:String) extends Kernel(_name:String)
 				count += 1
 			} else {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					stdDevs(i) = stdDevs(i) / (outputCount - 1)
 					stdDevs(i) = sqrt(stdDevs(i))
 					stdDev = stdDevs(i)

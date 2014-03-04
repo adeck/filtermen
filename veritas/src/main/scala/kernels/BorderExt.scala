@@ -7,6 +7,10 @@ import scalapipe.dsl._
 //    width
 //    height
 
+// TODO -- Currently uses the magic number '40' in place of width
+// in at least one place, because otherwise it won't compile.
+// Clearly, this is an issue that needs fixing.
+
 class BorderExt(_name:String) extends Kernel(_name:String)
 {
 	 /*

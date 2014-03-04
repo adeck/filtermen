@@ -20,8 +20,11 @@ class Threshold(_name:String) extends Kernel(_name:String)
 	tempMean = mean
 	tempStdDev = stdDev
 
-  // This is how type conversion is done.
+  // This is another way to do type conversion.
   //    UNSIGNED16( <thing_to_convert> )
+  // In fact, this is the only way the current scalapipe
+  //  documentation mentions. So, 'cast' probably should
+  //  be avoided. Although it does of course still work.
 	loThreshold = typ(tempMean + (1.5 * tempStdDev))
 	hiThreshold = typ(tempMean + (2 * tempStdDev))
 }
