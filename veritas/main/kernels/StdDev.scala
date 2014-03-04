@@ -1,6 +1,17 @@
 import scalapipe._
 import scalapipe.dsl._
 
+// Relies on the following config parameters:
+//    outputCount   --    The number of frames across which the standard
+//                        deviation should be taken.
+
+// This code employs the magic number 1600, rather than
+// explicitly calculating image size using width * height.
+// Again, this is done because the StdDev module is only
+// expected to be employed in the Veritas application, where
+// images are expected to be 40x40 pixels, and we expect to
+// use one of these modules per image.
+
 object StdDev extends Kernels {
 
 	val mean = input(FLOAT32)

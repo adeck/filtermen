@@ -1,6 +1,8 @@
 import scalapipe._
 import scalapipe.dsl._
 
+// Does not rely on config parameters.
+
 object Threshold extends Kernels {
 
 	val mean = input(FLOAT32)

@@ -1,45 +1,69 @@
-import scalapipe._
+package veritas.kernels
 
-object PrimaryFilter extends Kernel
+import scalapipe.dsl._
+import scalapipe.kernels._
+
+// Relies on the following config parameters:
+//    width
+//    height
+//    outputCount   --    The number of frames across which the standard
+//                        thresholds should be taken.
+
+// TODO -- Currently, it uses a mix of magic numbers and width and height 
+//          parameters due to type constraints and a lack of casting.
+//         These need to be removed, because as is they mean that
+//          width and height are both _required_ to be 40. Also, as is
+//          the code isn't DRY. But it compiles, anyway.
+
+class PrimaryFilter(_name:String) extends Kernel(_name:String)
 {
+  // to make this thing type parameterizable.
+  val typ = UNSIGNED16
   // ------== Data sigs ==------
-  val pixelIn = input(UNSIGNED32)
-  val pixelOut = output(UNSIGNED32)
+  val pixelIn = input(typ)
+  val pixelOut = output(typ)
 
   // ------== Control sigs ==------
-  val lowThreshIn = input(UNSIGNED32)
-  val highThreshIn = input(UNSIGNED32)
+  val lowThreshIn = input(typ)
+  val highThreshIn = input(typ)
 
   // ------== Parameters ==------
   // The number of frames between reloading threshold values
-  val refreshRate = config(UNSIGNED32, `refreshRate, 1000)
+  val refreshRate = config(UNSIGNED32, 'outputCount, 1000)
   // Adding 2 because border extension.
-  val width = 2 + config(UNSIGNED32, `width, 40)
-  val height = 2 + config(UNSIGNED32, `width, 40)
+  val width = 2 + config(UNSIGNED32, 'width, 40)
+  val height = 2 + config(UNSIGNED32, 'width, 40)
   
   // ------== Locals ==------
   // The pixel currently being read in, not the pixel under scrutiny
-  val curPixel = local(UNSIGNED32, 0)
-  // The pixel under scrutiny
-  val mainPixel = local(UNSIGNED32, 0)
+  val curPixel = local(typ, 0)
+  // The pixel under scrutiny; i.e. the pixel in the middle
+  //  of the 3x3 block being processed. 
+  val mainPixel = local(typ, 0)
   // Coordinates of pixel being read in
-  val x = local(UNISGNED32, 0)
+  val x = local(UNSIGNED32, 0)
   val y = local(UNSIGNED32, 0)
   // Index of current frame; used to determine when new threshold
   //    values should be read in.
   val frameCnt = local(UNSIGNED32, 0)
 
-  val vectorSize = config(UNSIGNED16, 'vectorSize, width * 2 + 2)
+  // TODO FIXME -- 40 == row width, however, there is no point in having
+  //          a 'width' parameter if I put this magic number in.
+  val vectorSize = 40 * 2 + 2
+  // TODO FIXME -- This _should_ be width * height. Unfortunately, it's
+  //          not being nice about that.
+  val imgSize = 40 * 40
   // Circular buffer of the last vectorSize pixels read in.
-  val pixelBuf = local(Vector(UNSIGNED32, vectorSize))
+  val pixelBuf = local(Vector(typ, vectorSize))
   // Pointer into the circular buffer.
   val bufPtr = local(UNSIGNED8, 0)
 
-  // main pixel location
-  mainPixLoc = local(UNSIGNED32, 0)
+  // the location in the circular buffer of the pixel in the middle
+  //  of the 3x3 block being processed. 
+  val mainPixLoc = local(UNSIGNED32, 0)
   // The buffers of low and high thresholding values foreach pixel
-  val lowThreshBuf = local(Vector(UNSIGNED32, width * height))
-  val highThreshBuf = local(Vector(UNSIGNED32, width * height))
+  val lowThreshBuf = local(Vector(typ, imgSize))
+  val highThreshBuf = local(Vector(typ, imgSize))
 
   // ------== Main Loop body ==------
 
@@ -66,6 +90,9 @@ object PrimaryFilter extends Kernel
   //        bufPtr + bufSize - 2  // bottom row left
   //        bufPtr + bufSize - 1, // bottom row middle
   //        curPixel              // bottom row right
+
+  // If this ends up being a bottleneck or using a multiplier,
+  //  it only really modularly increments, so that can be changed.
   mainPixLoc = (y - 1) * width + (x - 1)
   if (y > 1 && x > 1)
   {
@@ -74,6 +101,11 @@ object PrimaryFilter extends Kernel
       pixelOut = 0
     else if 
       ( 
+        // The numbers here allow me to easily check that I'm covering the
+        //  entire 3x3 box:
+        //    1 2 3
+        //    4 5 6
+        //    7 8 9
         mainPixel > highThreshBuf (mainPixLoc) || // 5
         curPixel > highThreshBuf (mainPixLoc + width + 1) || // 9
         pixelBuf (bufPtr) > highThreshBuf (mainPixLoc - width - 1) || // 1
@@ -83,18 +115,19 @@ object PrimaryFilter extends Kernel
               // mainPixel, 5
         pixelBuf ((bufPtr + width + 2) % vectorSize) > highThreshBuf (mainPixLoc + 1) || // 6
         pixelBuf ((bufPtr + vectorSize - 1) % vectorSize) > highThreshBuf (mainPixLoc + width - 1) || // 7
-        pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) || // 8
+        pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) // 8
+        // curPixel, 9
       )
-  {
-    pixelOut = mainPixel
+    {
+      pixelOut = mainPixel
+    }
   }
-}
 
-// ------== Loop update step ==------
+  // ------== Loop update step ==------
 
-// updates frame index
-frameCnt = (frameCnt + 1) % refreshRate
-// updates pixel buffer ptr & pixel buffer
+  // updates frame index
+  frameCnt = (frameCnt + 1) % refreshRate
+  // updates pixel buffer ptr & pixel buffer
   pixelBuf (bufPtr) = curPixel
   bufPtr = (bufPtr + 1) % vectorSize
   // updates x and y pointers
