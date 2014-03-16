@@ -45,12 +45,6 @@ class RunLengthEncode(_name:String) extends Kernel(_name:String)
 		}	
 	}
 	count += 1;
-  // NOTE -- Hey, so this used to say:
-  //  if (count == pixelNum)
-  // which gave a compiler error, because there is
-  // no pixelNum. From context, it seems like you
-  // wanted pixelCount. So, that's what I put.
-  // Feel free to blame me if I fucked up the logic.
 	if (count == pixelCount) {
 		count = 0
 		if (prevZero == 1) {
