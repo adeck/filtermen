@@ -3,22 +3,20 @@ import veritas.kernels.RunLengthEncode
 import scalapipe.kernels._
 import scalapipe.dsl._
 
-object RLE_test extends App {
+object RLE_test2 extends App {
 
-	val Random = new Kernel("Random") {
+	val NumSequence = new Kernel("NumSequence") {
 		//val iter = input(UNSIGNED32)
 		val iter = local(UNSIGNED32, 50)	
 		val y0 = output (UNSIGNED32)
 
-		val temp = local(UNSIGNED32,0)
 		val i = local(UNSIGNED32, 0)
 
-		temp = stdio.rand() %100
-		if(temp < 40) {
+		if(i < 20 || i>30) {
 			y0= 0
 		}
 		else{
-			y0 = temp
+			y0 = i
 		}
 
 		if(i < iter) {
@@ -38,11 +36,11 @@ object RLE_test extends App {
 	val UUT = new RunLengthEncode("RLE")
 	
 	val app = new Application {
-		val random = Random()
-		val encoded = UUT(random)
+		val num = NumSequence()
+		val encoded = UUT(num)
 		Print(encoded)
 	}
 
-	app.emit("RLE_test")
+	app.emit("RLE_test2")
 }
 
