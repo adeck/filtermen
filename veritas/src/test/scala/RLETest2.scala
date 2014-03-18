@@ -7,10 +7,10 @@ object RLE_test2 extends App {
 
 	val NumSequence = new Kernel("NumSequence") {
 		//val iter = input(UNSIGNED32)
-		val iter = local(UNSIGNED32, 50)	
-		val y0 = output (UNSIGNED32)
+		val iter = local(UNSIGNED16, 50)	
+		val y0 = output (UNSIGNED16)
 
-		val i = local(UNSIGNED32, 0)
+		val i = local(UNSIGNED16, 0)
 
 		if(i < 20 || i>30) {
 			y0= 0
