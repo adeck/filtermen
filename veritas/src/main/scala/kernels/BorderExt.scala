@@ -1,4 +1,4 @@
-package kernels
+package veritas.kernels
 import scalapipe._
 import scalapipe.dsl._
 
@@ -6,24 +6,33 @@ import scalapipe.dsl._
 //    width
 //    height
 
-object BorderExt extends Kernels {
+// TODO -- Currently uses the magic number '40' in place of width
+// in at least one place, because otherwise it won't compile.
+// Clearly, this is an issue that needs fixing.
+
+class BorderExt(_name:String) extends Kernel(_name:String)
+{
 	 /*
     * Questions that need answering:
 	  *   1.  Can we run this block in while loop instead of using implicit 
     *       looping as much as we do?
 	  *   2.  How much faster would a while loop be, if possible?
 	  */
+  val typ = UNSIGNED16
 
-	val dataIn = input(UNSIGNED32)
-	val dataOut = output(UNSIGNED32)
+	val dataIn = input(typ)
+	val dataOut = output(typ)
 	val width = config(UNSIGNED32, 'width, 40)
 	val height = config(UNSIGNED32, 'height, 40)
 
 	val x = local(UNSIGNED32, 0)
 	val y = local(UNSIGNED32, 0)
 	val i = local(UNSIGNED32, 0)
-	val rowQueue = local(Vector(UNSIGNED32, width))
-	val tempPixel = local(UNSIGNED32, 0)
+  // TODO FIXME -- change that '40' to something dependent on width
+  //              unfortunately, just using width doesn't do the
+  //              trick.
+	val rowQueue = local(Vector(typ, 40))
+	val tempPixel = local(typ, 0)
 
 	val state = local(UNSIGNED8, 0)
 

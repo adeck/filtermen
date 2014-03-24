@@ -1,3 +1,5 @@
+package veritas.kernels
+
 import scalapipe._
 import scalapipe.dsl._
 
@@ -12,10 +14,11 @@ import scalapipe.dsl._
 // images are expected to be 40x40 pixels, and we expect to
 // use one of these modules per image.
 
-object StdDev extends Kernels {
-
+class StdDev(_name:String) extends Kernel(_name:String)
+{
+  val typ = UNSIGNED16
 	val mean = input(FLOAT32)
-	val pixelData = input(UNSIGNED32)
+	val pixelData = input(typ)
 	val stdDev = output(FLOAT32)
 
 	val outputCount = config(UNSIGNED32, 'outputCount, 1000)
@@ -34,7 +37,7 @@ object StdDev extends Kernels {
 		when(0) {
 			count = 1
 			i = 0
-			while(i < 1600) {
+			while (i < 1600) {
 				means(i) = mean
 				stdDevs(i) = 0
 				i += 1
@@ -43,9 +46,9 @@ object StdDev extends Kernels {
 		}
 
 		when(1) {
-			if(count <= outputCount) {
+			if (count <= outputCount) {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					temp = cast(pixelData, FLOAT32)
 					stdDevs(i) += ((temp - means(i)) * (temp - means(i)))
 					i += 1
@@ -53,7 +56,7 @@ object StdDev extends Kernels {
 				count += 1
 			} else {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					stdDevs(i) = stdDevs(i) / (outputCount - 1)
 					stdDevs(i) = sqrt(stdDevs(i))
 					stdDev = stdDevs(i)

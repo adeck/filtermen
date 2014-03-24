@@ -1,3 +1,5 @@
+package veritas.kernels
+
 import scalapipe.dsl._
 
 // Relies on the following config parameters:
@@ -13,9 +15,10 @@ import scalapipe.dsl._
 // config parameters. This is done because the mean module is expected
 // to only be used to process 40x40 pixel images.
 
-object Mean extends Kernel {
-
-	val pixelData = input(UNSIGNED32)
+class Mean(_name:String) extends Kernel(_name:String)
+{
+  val typ = UNSIGNED16
+	val pixelData = input(typ)
 	val mean = output(FLOAT32)
 
 	val outputCount = config(UNSIGNED32, 'outputCount, 1000)
@@ -28,11 +31,10 @@ object Mean extends Kernel {
 	val i = local(UNSIGNED32, 0)
 
 	switch(state) {
-
 		when(0) {
 			count = 1
 			i = 0
-			while(i < 1600) {
+			while (i < 1600) {
 				means(i) = 0
 				i += 1
 			}
@@ -40,9 +42,9 @@ object Mean extends Kernel {
 		}
 
 		when(1) {
-			if(count <= outPutCount) {
+			if (count <= outputCount) {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					temp = means(i) * count
 					temp += cast(pixelData, FLOAT32)
 					means(i) = temp / count
@@ -51,7 +53,7 @@ object Mean extends Kernel {
 				count += 1
 			} else {
 				i = 0
-				while(i < 1600) {
+				while (i < 1600) {
 					mean = means(i)
 					i += 1
 				}

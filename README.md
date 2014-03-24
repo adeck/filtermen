@@ -14,13 +14,16 @@ Is the same for both pipelines (will be slightly different when updated to use m
 It is as follows:
 
 * pipeline\_name
-  * main
-    Contains all code necessary for the complete application, including
-    helpful functions and the entry point.
-    * kernels
-      Contains all the kernels, or "functional blocks" of the application.
-  * test
-    Contains all the tests; one for each kernel at minimum.
+  * src
+    * main
+      * scala
+        Contains all code necessary for the complete application, including
+        helpful functions and the entry point.
+        * kernels
+          Contains all the kernels, or "functional blocks" of the application.
+    * test
+      * scala
+        Contains all the tests; one for each kernel at minimum.
   * related
     Contains anything related to, but not explicitly part of, the
     application and its tests.
@@ -29,7 +32,7 @@ It is as follows:
 
 Each of the individual kernels should be described in its own file. Main files (i.e. Main.scala) describe the entire application, and import individual kernels as necessary.
 
-Kernels should go in the 'kernels' directory, and tests for each kernel should go in 'tests'. 
+Kernels should go in the 'kernels' directory, and tests for each kernel should go in 'test'. 
 New kernels should enumerate the config parameters they use in a comment at the top of the file, and for any parameter with a vague name, the meaning of that parameter should be clarified. 
 This is encouraged so that we don't end up needing to define 40 different cryptically-named parameters for the same information in each Main file.
 

@@ -1,3 +1,5 @@
+import veritas.kernels.StdDev
+
 import scalapipe.kernels._
 import scalapipe.dsl._
 
@@ -46,60 +48,7 @@ object StdDevTest extends App {
 			}
 		}
 
-		val StdDev = new Kernel("StdDev") {
-			//val mean = input(FLOAT32)
-			val pixelData = input(UNSIGNED32)
-			val stdDev = output(FLOAT32)
-
-			val outputCount = config(UNSIGNED32, 'outputCount, nums)
-
-			val count = local(UNSIGNED32, 0)
-			val means = local(Vector(FLOAT32, pixels))
-			val stdDevs = local(Vector(FLOAT32, pixels))
-			val temp = local(FLOAT32, 0)
-
-			val state = local(UNSIGNED8, 0)
-
-			val i = local(UNSIGNED32, 0)
-
-			switch(state) {
-
-				when(0) {
-					count = 1
-					i = 0
-					while(i < pixels) {
-						means(i) = 60
-						stdDevs(i) = 0
-						i += 1
-					}
-					state = 1
-				}
-
-				when(1) {
-					if(count <= outputCount) {
-						i = 0
-						while(i < pixels) {
-							temp = cast(pixelData, FLOAT32)
-							stdDevs(i) += ((temp - means(i)) * (temp - means(i)))
-							i += 1
-						}
-						count += 1
-					} else {
-						i = 0
-						while(i < pixels) {
-							stdDevs(i) = stdDevs(i) / (outputCount - 1)
-							stdDevs(i) = sqrt(stdDevs(i))
-							stdDev = stdDevs(i)
-							i += 1
-						}
-						state = 0
-					}
-				}
-
-			}
-		}
-
-		
+		val UUT = new StdDev("StdDev")
 
 		val Print = new Kernel("Print") {
 			val x0 = input(FLOAT32) 
@@ -123,7 +72,7 @@ object StdDevTest extends App {
 			//val newWidth = 7
 			//val newHeight = 7
 			val random = RandomReader()
-			val stdDev = StdDev(random)
+			val stdDev = UUT(random)
 			Print(stdDev)
 		}
 

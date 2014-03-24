@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+pandoc -s --self-contained -t slidy -f markdown "$1".md > "$1".html
+
