@@ -356,8 +356,8 @@ static inline T get_arg(int argc, char **argv, const char *name, const T d)
 }
 int main(int argc, char **argv)
 {
-    pthread_t thread0;
     pthread_t thread1;
+    pthread_t thread0;
     start_ticks = sp_get_ticks();
     gettimeofday(&start_time, NULL);
     signal(SIGINT, shutdown);
@@ -397,10 +397,10 @@ int main(int argc, char **argv)
     instance1.active_inputs = 0;
     instance3.active_inputs = 1;
     atexit(showStats);
-    pthread_create(&thread0, NULL, run_thread0, NULL);
     pthread_create(&thread1, NULL, run_thread1, NULL);
-    pthread_join(thread0, NULL);
+    pthread_create(&thread0, NULL, run_thread0, NULL);
     pthread_join(thread1, NULL);
+    pthread_join(thread0, NULL);
     return 0;
 }
 

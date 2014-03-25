@@ -1,6 +1,7 @@
 #ifndef sp_Print_H_
 #define sp_Print_H_
 #include "ScalaPipe.h"
+#include <stdlib.h>
 #include <stdio.h>
 /* UNSIGNED16 */
 struct sp_Print_data

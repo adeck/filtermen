@@ -1,5 +1,5 @@
 TARGETS=proc_localhost
-C_BLOCKS=NumSequence Print
+C_BLOCKS=Print NumSequence
 FPGA_BLOCKS=RLE
 TTOBJ=
 EXTRA_CFLAGS=

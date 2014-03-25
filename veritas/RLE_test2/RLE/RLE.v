@@ -62,7 +62,7 @@ module kernel_RLE(
     wire guard_6 = 1;
     assign read_S1 = ((state == 1) & guard_1);
     assign write_S2 = ((state == 19) & guard_19) | ((state == 23) & guard_23) | ((state == 18) & guard_18) | ((state == 16) & guard_16) | ((state == 7) & guard_7);
-    assign output_S2 =  state == 7 ? 0 : ( state == 19 ? temp1 : ( state == 18 ? state_S4 : ( state == 16 ? temp8 : (state_S4))));
+    assign output_S2 =  state == 19 ? temp1 : ( state == 23 ? state_S4 : ( state == 7 ? 0 : ( state == 18 ? state_S4 : (temp8))));
     reg dummy;
     always @(*) begin
         dummy <= clk;
