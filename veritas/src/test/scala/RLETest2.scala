@@ -6,7 +6,6 @@ import scalapipe.dsl._
 object RLE_test2 extends App {
 
 	val NumSequence = new Kernel("NumSequence") {
-		//val iter = input(UNSIGNED32)
 		val iter = local(UNSIGNED16, 50)	
 		val y0 = output (UNSIGNED16)
 
@@ -39,6 +38,8 @@ object RLE_test2 extends App {
 		val num = NumSequence()
 		val encoded = UUT(num)
 		Print(encoded)
+		map(ANY_KERNEL -> RunLengthEncode, CPU2FPGA())
+		map(RunLengthEncode -> ANY_KERNEL, FPGA2CPU())
 	}
 
 	app.emit("RLE_test2")
