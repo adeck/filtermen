@@ -46,6 +46,7 @@ object PrimaryFilterTest extends App
   val Print = new Kernel("_output")
   {
     val in = input(UNSIGNED16)
+    val tmp = local(UNSIGNED16)
     val fd = local(stdio.FILEPTR, 0)
     if (fd == 0)
     {
@@ -59,7 +60,8 @@ object PrimaryFilterTest extends App
     }
     else
     {
-      stdio.fprintf(fd, "%d\n", in)
+      tmp = in
+      stdio.fprintf(fd, "%d\n", addr(tmp))
     }
   }
   val app = new Application

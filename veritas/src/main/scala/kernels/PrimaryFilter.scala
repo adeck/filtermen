@@ -97,7 +97,7 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   if (y > 1 && x > 1)
   {
     mainPixel = pixelBuf ((bufPtr + width + 1) % vectorSize)
-    if (curPixel < lowThreshBuf (mainPixLoc))
+    if (mainPixel < lowThreshBuf (mainPixLoc))
       pixelOut = 0
     else if 
       ( 
@@ -120,6 +120,10 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
       )
     {
       pixelOut = mainPixel
+    }
+    else
+    {
+      pixelOut = 0
     }
   }
 
