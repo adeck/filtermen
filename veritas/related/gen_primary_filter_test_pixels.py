@@ -55,23 +55,5 @@ expected = [
       [300,300,300],
       [300,300,300]
     ]
-"""
-# row 0
---numrows
-f.write('200\n' * 2)
-f.write('60\n' * 2)
-f.write('0\n' * (rowsize - 4))
-# row 1
-f.write('60\n' * 4)
-f.write('0\n' * (rowsize - 4))
-# rows 2,3,4
-f.write('0\n' * rowsize * 3)
-# row 5
-f.write('0\n')
-f.write('70\n' * 3)
-f.write('0\n' * (rowsize - 4))
-# row 6
-f.write('0\n' * 2)
-f.write('151\n')
-f.write('0\n' * (rowsize - 3))
-"""
+
+

@@ -1,8 +1,8 @@
+import veritas.kernels.PrimaryFilter
+
 import scalapipe.kernels._
 import scalapipe.dsl._
 
-// UUT
-import veritas.kernels.PrimaryFilter
 
 // extends App == scala boilerplate that may actually not be
 //                helpful, anymore. But... tradition! *shrug*
@@ -70,5 +70,5 @@ object PrimaryFilterTest extends App
                   'outputCount -> 30, 'width -> 40, 'height -> 40)
     Print(out(0))
   }
-  app.emit("PrimaryFilter")
+  app.emit("PrimaryFilterTest")
 }

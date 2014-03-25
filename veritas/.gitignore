@@ -7,4 +7,11 @@ target
 compile
 run
 out
-
+# More exciting excludes...
+PrimaryFilterTest
+BorderExtTest
+StdDevTest
+RLE_test2
+MeanTest
+FirstHalfTest
+RLE_test
