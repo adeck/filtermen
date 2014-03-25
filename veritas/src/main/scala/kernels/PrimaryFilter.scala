@@ -20,19 +20,19 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   // to make this thing type parameterizable.
   val typ = UNSIGNED16
   // ------== Data sigs ==------
-  val pixelIn = input(typ)
-  val pixelOut = output(typ)
+  val pixelIn = input(typ, 'pixelIn)
+  val pixelOut = output(typ, 'pixelOut)
 
   // ------== Control sigs ==------
-  val lowThreshIn = input(typ)
-  val highThreshIn = input(typ)
+  val lowThreshIn = input(typ, 'lowThreshIn)
+  val highThreshIn = input(typ, 'highThreshIn)
 
   // ------== Parameters ==------
   // The number of frames between reloading threshold values
   val refreshRate = config(UNSIGNED32, 'outputCount, 1000)
   // Adding 2 because border extension.
   val width = 2 + config(UNSIGNED32, 'width, 40)
-  val height = 2 + config(UNSIGNED32, 'width, 40)
+  val height = 2 + config(UNSIGNED32, 'height, 40)
   
   // ------== Locals ==------
   // The pixel currently being read in, not the pixel under scrutiny
@@ -47,12 +47,12 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   //    values should be read in.
   val frameCnt = local(UNSIGNED32, 0)
 
-  // TODO FIXME -- 40 == row width, however, there is no point in having
+  // TODO FIXME -- 42 == row width, however, there is no point in having
   //          a 'width' parameter if I put this magic number in.
-  val vectorSize = 40 * 2 + 2
+  val vectorSize = 42 * 2 + 2
   // TODO FIXME -- This _should_ be width * height. Unfortunately, it's
   //          not being nice about that.
-  val imgSize = 40 * 40
+  val imgSize = 42 * 42
   // Circular buffer of the last vectorSize pixels read in.
   val pixelBuf = local(Vector(typ, vectorSize))
   // Pointer into the circular buffer.
@@ -125,8 +125,6 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
 
   // ------== Loop update step ==------
 
-  // updates frame index
-  frameCnt = (frameCnt + 1) % refreshRate
   // updates pixel buffer ptr & pixel buffer
   pixelBuf (bufPtr) = curPixel
   bufPtr = (bufPtr + 1) % vectorSize
@@ -135,6 +133,10 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   if (x == 0)
   {
     y = (y + 1) % height
+    // updates frame index
+    if (y == 0)
+      frameCnt = (frameCnt + 1) % refreshRate
   }
 }
+
 

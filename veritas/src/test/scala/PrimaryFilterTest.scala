@@ -8,18 +8,21 @@ import veritas.kernels.PrimaryFilter
 //                helpful, anymore. But... tradition! *shrug*
 object PrimaryFilterTest extends App
 {
-  val imgSize = 1600
+  val imgSize = 40 * 40
   val UUT = new PrimaryFilter("PrimaryFilter")
   val Read = new Kernel("_input")
   {
     val iterations = config(UNSIGNED32, 'iterations, imgSize)
     val out = output(UNSIGNED16)
+    val lowThresh = output(UNSIGNED16)
+    lowThresh = 50
+    val highThresh = output(UNSIGNED16)
+    highThresh = 150
     val fd = local(stdio.FILEPTR, 0)
     val tmp = local(UNSIGNED16)
     if (fd == 0)
     {
-      // TODO -- extract input pixels
-      val fname = "primary_filter_test_pixels.txt"
+      val fname = "../primary_filter_test_pixels.txt"
       fd = stdio.fopen(fname, "r")
       if (fd == 0)
       {
@@ -35,23 +38,37 @@ object PrimaryFilterTest extends App
     if (iterations > 0)
       iterations -= 1
     else
+    {
+      stdio.printf("Completed run")
       stop
+    }
   }
   val Print = new Kernel("_output")
   {
     val in = input(UNSIGNED16)
-    stdio.printf("%d", in)
+    val fd = local(stdio.FILEPTR, 0)
+    if (fd == 0)
+    {
+      val fname = "../primary_filter_test_output.txt"
+      fd = stdio.fopen(fname, "w")
+      if (fd == 0)
+      {
+        stdio.printf("ERROR: Unable to open \"%s\".\n", fname)
+        stdio.exit(-1)
+      }
+    }
+    else
+    {
+      stdio.fprintf(fd, "%d\n", in)
+    }
   }
   val app = new Application
   {
     val iterations = 40
-    val lowThresh = 50
-    val highThresh = 150
     val in = Read('iterations -> iterations)
-    val out = UUT('width -> 40, 'height -> 40, 'outputCount -> 30,
-                  'pixelIn -> in(0), 
-                  'lowThresh -> lowThresh, 'highThresh -> highThresh)
-    Print(out('pixelOut))
+    val out = UUT(in(0), in(1), in(2), 
+                  'outputCount -> 30, 'width -> 40, 'height -> 40)
+    Print(out(0))
   }
   app.emit("PrimaryFilter")
 }
