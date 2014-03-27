@@ -36,6 +36,7 @@ object MeanTest extends App {
 				stdio.printf("\n")
 			}
 			count += 1
+			stdio.exit(0)
 		}
 
 		val app = new Application {
@@ -48,6 +49,8 @@ object MeanTest extends App {
 			val random = Random()
 			val mean = UUT(random)
 			Print(mean)
+			map(ANY_KERNEL -> UUT, CPU2FPGA())
+			map(UUT -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("MeanTest")
