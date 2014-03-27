@@ -63,6 +63,7 @@ object PrimaryFilterTest extends App
       tmp = in
       stdio.fprintf(fd, "%d\n", addr(tmp))
     }
+    stdio.exit(0)
   }
   val app = new Application
   {
@@ -71,6 +72,8 @@ object PrimaryFilterTest extends App
     val out = UUT(in(0), in(1), in(2), 
                   'outputCount -> 30, 'width -> 40, 'height -> 40)
     Print(out(0))
+    map(ANY_KERNEL -> UUT, CPU2FPGA())
+		map(UUT -> ANY_KERNEL, FPGA2CPU())
   }
   app.emit("PrimaryFilterTest")
 }
