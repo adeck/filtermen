@@ -74,6 +74,7 @@ object FirstHalfTest extends App {
 				stdio.printf("\n")
 			}
 			count += 1
+			stdio.exit(0)
 		}
 
 		val app = new Application {
@@ -88,6 +89,10 @@ object FirstHalfTest extends App {
 			val stdDev = StdDev0(mean(0), random(1))
 			val threshold = Threshold0(mean(1), stdDev(0))
 			Print(mean(2), stdDev(1), threshold(0), threshold(1))
+			map(ANY_KERNEL -> Mean0, CPU2FPGA())
+			map(Mean0 -> ANY_KERNEL, FPGA2FPGA())
+			map(StdDev0 -> ANY_KERNEL, FPGA2FPGA())
+			map(Threshold0 -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("FirstHalfTest")
