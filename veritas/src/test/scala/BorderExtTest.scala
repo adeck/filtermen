@@ -42,7 +42,7 @@ object BorderExtTest extends App {
 				stdio.printf("\t")
 			}
 			count += 1
-
+			stdio.exit(0)
 		}
 
 		val app = new Application {
@@ -54,6 +54,8 @@ object BorderExtTest extends App {
 			val random = Random('iterations -> iterations)
 			val border = UUT(random)
 			Print(border)
+			map(ANY_KERNEL -> UUT, CPU2FPGA())
+			map(UUT -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("BorderTest")
