@@ -62,6 +62,7 @@ object StdDevTest extends App {
 				stdio.printf("\n")
 			}
 			count += 1
+			stdio.exit(0)
 		}
 
 		val app = new Application {
@@ -74,6 +75,8 @@ object StdDevTest extends App {
 			val random = RandomReader()
 			val stdDev = UUT(random)
 			Print(stdDev)
+			map(ANY_KERNEL -> UUT, CPU2FPGA())
+			map(UUT -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("StdDevTest")
