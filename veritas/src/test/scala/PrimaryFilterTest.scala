@@ -9,7 +9,21 @@ import scalapipe.dsl._
 object PrimaryFilterTest extends App
 {
   val imgSize = 40 * 40
-  val UUT = new PrimaryFilter("PrimaryFilter")
+  //val UUT = new PrimaryFilter("PrimaryFilter")
+  val UUT = new Kernel("PrimaryFilterDummy")
+  {
+    val x1 = input(UNSIGNED16)
+    val x2 = input(UNSIGNED16)
+    val x3 = input(UNSIGNED16)
+    val oc = config(UNSIGNED16, 'outputCount, 0)
+    val width = config(UNSIGNED16, 'width, 0)
+    val height = config(UNSIGNED16, 'height, 0)
+    val y = output(UNSIGNED16)
+
+    y = x1 + x2 + x3
+  }
+    //val out = UUT(in(0), in(1), in(2), 
+                  //'outputCount -> 30, 'width -> 40, 'height -> 40)
   val Read = new Kernel("_input")
   {
     val iterations = config(UNSIGNED32, 'iterations, imgSize)

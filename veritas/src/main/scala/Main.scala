@@ -1,6 +1,6 @@
 package veritas
 import kernels.{  
-                  PrimaryFilter, RunLengthEncode, Threshold
+                  PrimaryFilter, RunLengthEncode, Threshold,
                   Mean, StdDev, BorderExt
                }
 
@@ -12,7 +12,7 @@ import scalapipe.dsl._
 object Main extends App
 {
   // External units.
-  val BorderExtInput = BorderExt("BorderExtInput")
+  val BorderExtInput = new BorderExt("BorderExtInput")
   val PrimaryUnit = new PrimaryFilter("PrimaryFilter")
   val RLEUnit = new RunLengthEncode("RunLengthEncode")
   val ThresholdUnit = new Threshold("Threshold")
@@ -20,6 +20,8 @@ object Main extends App
   val BorderExtHiThreshold = new BorderExt("BorderExtHiThreshold")
   val MeanUnit = new Mean("Mean")
   val StdDevUnit = new StdDev("StdDev")
+  // Constants
+  val imgSize = 42 * 42
   // Internal units (subject to change)
   val Read = new Kernel("_input")
   {
@@ -83,7 +85,7 @@ object Main extends App
     val primary = PrimaryUnit(be_in, be_lo_threshold, be_hi_threshold,
                       'outputCount -> 1000, 'width -> 40, 'height -> 40)
     val runlength_encoded = RLEUnit(primary)
-    Print(out(0))
+    Print(runlength_encoded(0))
   }
   app.emit("Veritas")
 }

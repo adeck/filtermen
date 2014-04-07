@@ -90,8 +90,9 @@ object FirstHalfTest extends App {
 			val threshold = Threshold0(mean(1), stdDev(0))
 			Print(mean(2), stdDev(1), threshold(0), threshold(1))
 			map(ANY_KERNEL -> Mean0, CPU2FPGA())
-			map(Mean0 -> ANY_KERNEL, FPGA2FPGA())
-			map(StdDev0 -> ANY_KERNEL, FPGA2FPGA())
+      // There is no FPGA2FPGA symbol for some reason. *shrug*
+			//map(Mean0 -> ANY_KERNEL, FPGA2FPGA())
+			//map(StdDev0 -> ANY_KERNEL, FPGA2FPGA())
 			map(Threshold0 -> ANY_KERNEL, FPGA2CPU())
 		}
 
