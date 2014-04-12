@@ -6,7 +6,7 @@ import scalapipe.dsl._
 object RLE_test2 extends App {
 
 	val NumSequence = new Kernel("NumSequence") {
-		val iter = local(UNSIGNED16, 50)	
+		val iter = local(UNSIGNED16, 1600)	
 		val y0 = output (UNSIGNED16)
 
 		val i = local(UNSIGNED16, 0)
