@@ -7,7 +7,7 @@ object RLE_test extends App {
 
 	val Random = new Kernel("Random") {
 		//val iter = input(UNSIGNED32)
-		val iter = local(UNSIGNED16, 50)	
+		val iter = local(UNSIGNED16, 1600)	
 		val y0 = output (UNSIGNED16)
 
 		val temp = local(UNSIGNED16,0)
