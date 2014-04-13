@@ -1,10 +1,7 @@
 #!/usr/bin/env python2.7
 
-f = open('primary_filter_test_pixels.txt', 'w')
 
-def write(img):
-  rowsize = 42
-  numrows = 42
+def write(f, img, rowsize, numrows):
   for row in img:
     #print("numrows: " + str(numrows))
     numrows -= 1
@@ -20,6 +17,8 @@ def write(img):
     numrows -= 1
     for i in range(rowsize):
       f.write('0\n')
+def writes(f, img, rowsize):
+  write(f, img, rowsize, rowsize)
 
 img = [
         [200, 200, 60, 60],
@@ -38,7 +37,8 @@ img = [
         [200,300,300,300,10]
       ]
 
-write(img)
+f = open('primary_filter_test_pixels.txt', 'w')
+writes(f, img, 42)
     
 expected = [
       [60, 60],
@@ -51,9 +51,11 @@ expected = [
       [0],
       [0],
       [0],
-      [300,300,300],
+      [300,300,300, 50],
       [300,300,300],
       [300,300,300]
     ]
 
+f = open('primary_filter_test_expected_output.txt', 'w')
+writes(f, expected, 40)
 

@@ -25,9 +25,10 @@ object Main extends App
   // Internal units (subject to change)
   val Read = new Kernel("_input")
   {
-    val fname = "../main_input.txt"
     val iterations = config(UNSIGNED32, 'iterations, imgSize)
     val out = output(UNSIGNED16)
+    /*
+    val fname = "../main_input.txt"
     val fd = local(stdio.FILEPTR, 0)
     val tmp = local(UNSIGNED16)
     if (fd == 0)
@@ -44,6 +45,8 @@ object Main extends App
       stdio.fscanf(fd, "%d", addr(tmp))
       out = tmp
     }
+    */
+    out = stdio.rand()
     if (iterations > 0)
       iterations -= 1
     else
@@ -52,6 +55,7 @@ object Main extends App
   val Print = new Kernel("_output")
   {
     val in = input(UNSIGNED16)
+    /*
     val tmp = local(UNSIGNED16)
     val fd = local(stdio.FILEPTR, 0)
     if (fd == 0)
@@ -67,18 +71,51 @@ object Main extends App
     else
     {
       tmp = in
-      stdio.fprintf(fd, "%d\n", addr(tmp))
+      stdio.fprintf(fd, "%d\n", tmp)
     }
+    */
+    stdio.printf("%hu\n", in)
   }
+
+  val Dup3 = new Kernel("Dup3")
+  {
+    val typ = UNSIGNED16
+    val in = input(typ)
+    val y0 = output(typ)
+    val y1 = output(typ)
+    val y2 = output(typ)
+    
+    val tmp = local(typ)
+    tmp = in
+    y0 = tmp
+    y1 = tmp
+    y2 = tmp
+  }
+
+  val Dup2 = new Kernel("Dup2")
+  {
+    val typ = FLOAT32
+    val in = input(typ)
+    val y0 = output(typ)
+    val y1 = output(typ)
+    
+    val tmp = local(typ)
+    tmp = in
+    y0 = tmp
+    y1 = tmp
+  }
+
   val app = new Application
   {
-    val iterations = 40
+    val iterations = 1600
     val outputCount = 1000
     val in = Read('iterations -> iterations)
-    val be_in = BorderExtInput(in)
-    val mean = MeanUnit(in)
-    val std_dev = StdDevUnit(mean, in)
-    val threshold = ThresholdUnit(mean, std_dev)
+    val in3 = Dup3(in)
+    val be_in = BorderExtInput(in3(0))
+    val mean = MeanUnit(in3(1))
+    val mean2 = Dup2(mean)
+    val std_dev = StdDevUnit(mean2(0), in3(2))
+    val threshold = ThresholdUnit(mean2(1), std_dev)
     // be --> border extended
     val be_lo_threshold = BorderExtLoThreshold(threshold(0))
     val be_hi_threshold = BorderExtHiThreshold(threshold(1))
@@ -86,6 +123,8 @@ object Main extends App
                       'outputCount -> 1000, 'width -> 40, 'height -> 40)
     val runlength_encoded = RLEUnit(primary)
     Print(runlength_encoded(0))
+    //map(Read -> ANY_KERNEL, CPU2FPGA())
+    //map(ANY_KERNEL -> Print, FPGA2CPU())
   }
   app.emit("Veritas")
 }

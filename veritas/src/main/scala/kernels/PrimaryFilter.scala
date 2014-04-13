@@ -35,11 +35,6 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   val height = 2 + config(UNSIGNED32, 'height, 40)
   
   // ------== Locals ==------
-  // The pixel currently being read in, not the pixel under scrutiny
-  val curPixel = local(typ, 0)
-  // The pixel under scrutiny; i.e. the pixel in the middle
-  //  of the 3x3 block being processed. 
-  val mainPixel = local(typ, 0)
   // Coordinates of pixel being read in
   val x = local(UNSIGNED32, 0)
   val y = local(UNSIGNED32, 0)
@@ -60,66 +55,93 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
 
   // the location in the circular buffer of the pixel in the middle
   //  of the 3x3 block being processed. 
-  val mainPixLoc = local(UNSIGNED32, 0)
+  val mainPixLoc = local(UNSIGNED32)
   // The buffers of low and high thresholding values foreach pixel
   val lowThreshBuf = local(Vector(typ, imgSize))
   val highThreshBuf = local(Vector(typ, imgSize))
 
+  // top row
+  val upperLeft = local(typ)
+  val upperLeftHi = local(typ)
+  val upperMid = local(typ)
+  val upperMidHi = local(typ)
+  val upperRight = local(typ)
+  val upperRightHi = local(typ)
+  // middle row
+  val midLeft = local(typ)
+  val midLeftHi = local(typ)
+  val midMid = local(typ)
+  val midMidLo = local(typ)
+  val midMidHi = local(typ)
+  val midRight = local(typ)
+  val midRightHi = local(typ)
+  // bottom row
+  val lowerLeft = local(typ)
+  val lowerLeftHi = local(typ)
+  val lowerMid = local(typ)
+  val lowerMidHi = local(typ)
+  val lowerRight = local(typ)
+  val lowerRightHi = local(typ)
+
   // ------== Main Loop body ==------
 
-  curPixel = pixelIn
+  lowerRight = pixelIn
   if (frameCnt == 0)
   {
     lowThreshBuf (y * height + x) = lowThreshIn
     highThreshBuf (y * height + x) = highThreshIn
   }
-  // Big picture algo description:
-  //  The pixel currently being read in is the pixel to the lower
-  //  right of the output pixel. So, within the circular buffer,
-  //  that means two of the lower row of pixels are beside the three
-  //  pixels in the top row, and the middle row of pixels are as far
-  //  as possible from the other relevant pixels in the circular buffer.
-  //    This means the output pixel is actually rowsize + 1 pixels behind
-  //  the current pixel, and also rowsize + 1 pixels ahead of the oldest
-  //  pixel in the buffer. bufPtr points to the oldest pixel in the buffer.
-  //    Thus, we have that the neighboring pixels are at:
-  //        bufPtr, bufPtr + 1, bufPtr + 2, // top row
-  //        bufPtr + width, // middle row left
-  //        bufPtr + width + 1, // output pixel location
-  //        bufPtr + width + 2, // middle row right
-  //        bufPtr + bufSize - 2  // bottom row left
-  //        bufPtr + bufSize - 1, // bottom row middle
-  //        curPixel              // bottom row right
 
-  // If this ends up being a bottleneck or using a multiplier,
-  //  it only really modularly increments, so that can be changed.
-  mainPixLoc = (y - 1) * width + (x - 1)
   if (y > 1 && x > 1)
   {
-    mainPixel = pixelBuf ((bufPtr + width + 1) % vectorSize)
-    if (mainPixel < lowThreshBuf (mainPixLoc))
-      pixelOut = 0
-    else if 
-      ( 
-        // The numbers here allow me to easily check that I'm covering the
-        //  entire 3x3 box:
-        //    1 2 3
-        //    4 5 6
-        //    7 8 9
-        mainPixel > highThreshBuf (mainPixLoc) || // 5
-        curPixel > highThreshBuf (mainPixLoc + width + 1) || // 9
-        pixelBuf (bufPtr) > highThreshBuf (mainPixLoc - width - 1) || // 1
-        pixelBuf ((bufPtr + 1) % vectorSize) > highThreshBuf (mainPixLoc - width) || // 2
-        pixelBuf ((bufPtr + 2) % vectorSize) > highThreshBuf (mainPixLoc - width + 1) || // 3
-        pixelBuf ((bufPtr + width) % vectorSize) > highThreshBuf (mainPixLoc - 1) || // 4
-              // mainPixel, 5
-        pixelBuf ((bufPtr + width + 2) % vectorSize) > highThreshBuf (mainPixLoc + 1) || // 6
-        pixelBuf ((bufPtr + vectorSize - 1) % vectorSize) > highThreshBuf (mainPixLoc + width - 1) || // 7
-        pixelBuf ((bufPtr + vectorSize - 2) % vectorSize) > highThreshBuf (mainPixLoc + width) // 8
-        // curPixel, 9
-      )
+    // If this ends up being a bottleneck or using a multiplier,
+    //  it only really modularly increments, so that can be changed.
+    mainPixLoc = (y - 1) * width + (x - 1)
+    // the pixel to filter
+    midMid = pixelBuf ((bufPtr + width + 1) % vectorSize)
+    midMidLo = lowThreshBuf (mainPixLoc)
+    midMidHi = highThreshBuf (mainPixLoc)
+    // top row
+    upperLeft = pixelBuf (bufPtr)
+    upperLeftHi = highThreshBuf (mainPixLoc - width - 1)
+    upperMid = pixelBuf ((bufPtr + 1) % vectorSize)
+    upperMidHi = highThreshBuf (mainPixLoc - width)
+    upperRight = pixelBuf ((bufPtr + 2) % vectorSize)
+    upperRightHi = highThreshBuf (mainPixLoc - width + 1)
+    // middle row
+    midLeft = pixelBuf ((bufPtr + width) % vectorSize)
+    midLeftHi = highThreshBuf (mainPixLoc - 1)
+    midRight = pixelBuf ((bufPtr + width + 2) % vectorSize)
+    midRightHi = highThreshBuf (mainPixLoc + 1)
+    // bottom row
+    // NOTE: This is _not_ the same as saying `bufPtr - 1' % vectorSize.
+    //        Done this way to handle arithmetic overflow in the cases 
+    //          of bufPtr == 0 || bufPtr == 1.
+    lowerLeft = pixelBuf ((bufPtr + vectorSize - 2) % vectorSize)
+    lowerLeftHi = highThreshBuf (mainPixLoc + width - 1)
+    lowerMid = pixelBuf ((bufPtr + vectorSize - 1) % vectorSize)
+    lowerMidHi = highThreshBuf (mainPixLoc + width)
+    //lowerRight
+    lowerRightHi = highThreshBuf (mainPixLoc + width + 1)
+    if (midMid < midMidLo)
     {
-      pixelOut = mainPixel
+      pixelOut = 0
+    }
+    // Checks lowerRight first because that doesn't require a
+    // memory access.
+    else if (
+             midMidHi < midMid ||
+             lowerRightHi < lowerRight ||
+             upperLeftHi < upperLeft ||
+             upperMidHi < upperMid ||
+             upperRightHi < upperRight ||
+             midLeftHi < midLeft ||
+             midRightHi < midRight ||
+             lowerLeftHi < lowerLeft ||
+             lowerMidHi < lowerMid
+            )
+    {
+      pixelOut = midMid
     }
     else
     {
@@ -130,7 +152,7 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
   // ------== Loop update step ==------
 
   // updates pixel buffer ptr & pixel buffer
-  pixelBuf (bufPtr) = curPixel
+  pixelBuf (bufPtr) = lowerRight
   bufPtr = (bufPtr + 1) % vectorSize
   // updates x and y pointers
   x = (x + 1) % width

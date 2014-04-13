@@ -6,6 +6,7 @@ target
 # 'run' is a similar story
 compile
 run
+r
 out
 # More exciting excludes...
 PrimaryFilterTest
