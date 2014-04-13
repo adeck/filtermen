@@ -123,8 +123,8 @@ object Main extends App
                       'outputCount -> 1000, 'width -> 40, 'height -> 40)
     val runlength_encoded = RLEUnit(primary)
     Print(runlength_encoded(0))
-    //map(Read -> ANY_KERNEL, CPU2FPGA())
-    //map(ANY_KERNEL -> Print, FPGA2CPU())
+    map(Read -> ANY_KERNEL, CPU2FPGA())
+    map(ANY_KERNEL -> Print, FPGA2CPU())
   }
   app.emit("Veritas")
 }

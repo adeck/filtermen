@@ -98,28 +98,46 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
     //  it only really modularly increments, so that can be changed.
     mainPixLoc = (y - 1) * width + (x - 1)
     // the pixel to filter
-    midMid = pixelBuf ((bufPtr + width + 1) % vectorSize)
+    if ((bufPtr + width + 1) >= vectorSize)
+      midMid = pixelBuf ((bufPtr + width + 1) - vectorSize)
+    else
+      midMid = pixelBuf (bufPtr + width + 1)
     midMidLo = lowThreshBuf (mainPixLoc)
     midMidHi = highThreshBuf (mainPixLoc)
     // top row
     upperLeft = pixelBuf (bufPtr)
     upperLeftHi = highThreshBuf (mainPixLoc - width - 1)
-    upperMid = pixelBuf ((bufPtr + 1) % vectorSize)
+    if ((bufPtr + 1) == vectorSize)
+      upperMid = pixelBuf (0)
+    else
+      upperMid = pixelBuf (bufPtr + 1)
     upperMidHi = highThreshBuf (mainPixLoc - width)
-    upperRight = pixelBuf ((bufPtr + 2) % vectorSize)
+    if ((bufPtr + 2) >= vectorSize)
+      upperRight = pixelBuf ((bufPtr + 2) - vectorSize)
+    else
+      upperRight = pixelBuf (bufPtr + 2)
     upperRightHi = highThreshBuf (mainPixLoc - width + 1)
     // middle row
-    midLeft = pixelBuf ((bufPtr + width) % vectorSize)
+    if ((bufPtr + width) >= vectorSize)
+      midLeft = pixelBuf ((bufPtr + width) - vectorSize)
+    else
+      midLeft = pixelBuf (bufPtr + width)
     midLeftHi = highThreshBuf (mainPixLoc - 1)
-    midRight = pixelBuf ((bufPtr + width + 2) % vectorSize)
+    if ((bufPtr + width + 2) >= vectorSize)
+      midRight = pixelBuf ((bufPtr + width + 2) - vectorSize)
+    else
+      midRight = pixelBuf (bufPtr + width + 2)
     midRightHi = highThreshBuf (mainPixLoc + 1)
     // bottom row
-    // NOTE: This is _not_ the same as saying `bufPtr - 1' % vectorSize.
-    //        Done this way to handle arithmetic overflow in the cases 
-    //          of bufPtr == 0 || bufPtr == 1.
-    lowerLeft = pixelBuf ((bufPtr + vectorSize - 2) % vectorSize)
+    if (bufPtr == 0 || bufPtr == 1)
+      lowerLeft = pixelBuf (bufPtr + vectorSize - 2)
+    else
+      lowerLeft = pixelBuf (bufPtr - 2)
     lowerLeftHi = highThreshBuf (mainPixLoc + width - 1)
-    lowerMid = pixelBuf ((bufPtr + vectorSize - 1) % vectorSize)
+    if (bufPtr == 0)
+      lowerMid = pixelBuf (vectorSize - 1)
+    else
+      lowerMid = pixelBuf (bufPtr - 1)
     lowerMidHi = highThreshBuf (mainPixLoc + width)
     //lowerRight
     lowerRightHi = highThreshBuf (mainPixLoc + width + 1)
@@ -153,15 +171,28 @@ class PrimaryFilter(_name:String) extends Kernel(_name:String)
 
   // updates pixel buffer ptr & pixel buffer
   pixelBuf (bufPtr) = lowerRight
-  bufPtr = (bufPtr + 1) % vectorSize
+  if ((bufPtr + 1) == vectorSize)
+    bufPtr = 0
+  else
+    bufPtr = bufPtr + 1
   // updates x and y pointers
-  x = (x + 1) % width
+  if ((x + 1) == width)
+    x = 0
+  else
+    x = (x + 1)
   if (x == 0)
   {
-    y = (y + 1) % height
-    // updates frame index
-    if (y == 0)
-      frameCnt = (frameCnt + 1) % refreshRate
+    if ((y + 1) == height)
+    {
+      y = 0
+      // updates frame index
+      if ((frameCnt + 1) == refreshRate)
+        frameCnt = 0
+      else
+        frameCnt += 1
+    }
+    else 
+      y = (y + 1)
   }
 }
 
