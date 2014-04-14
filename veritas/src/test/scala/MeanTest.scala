@@ -36,7 +36,7 @@ object MeanTest extends App {
 				stdio.printf("\n")
 			}
 			count += 1
-			stdio.exit(0)
+		//	stdio.exit(0)
 		}
 
 		val app = new Application {
