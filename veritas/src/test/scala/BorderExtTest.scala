@@ -30,19 +30,19 @@ object BorderExtTest extends App {
 			val hCount = local(UNSIGNED32, 0)
 
 			temp = x0
-			stdio.printf("%u", temp)
+			//stdio.printf("%u", temp)
 			if (count % width == 0) {
-				stdio.printf("\n\n")
+			//	stdio.printf("\n\n")
 				hCount += 1
 				if (hCount == height) {
-					stdio.printf("\n\n")
+			//		stdio.printf("\n\n")
 					hCount = 0
 				}
 			} else {
-				stdio.printf("\t")
+			//	stdio.printf("\t")
 			}
 			count += 1
-			stdio.exit(0)
+			//stdio.exit(0)
 		}
 
 		val app = new Application {
