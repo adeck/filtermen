@@ -57,10 +57,10 @@ object StdDevTest extends App {
 			val temp = local(FLOAT32, 0)
 
 			temp = x0
-			//stdio.printf("Pixel %u:\t%.2f\n", count % pixels, temp)
-			//if(count % pixels == (pixels - 1)) {
-			//	stdio.printf("\n")
-			//}
+			stdio.printf("Pixel %u:\t%.2f\n", count % pixels, temp)
+			if(count % pixels == (pixels - 1)) {
+				stdio.printf("\n")
+			}
 			count += 1
 			//if(count == pixels * nums * 10) {
 			//	stdio.exit(0)
@@ -78,8 +78,8 @@ object StdDevTest extends App {
 			val random = RandomReader()
 			val stdDev = UUT(random(0), random(1))
 			Print(stdDev)
-			//map(ANY_KERNEL -> UUT, CPU2FPGA())
-			//map(UUT -> ANY_KERNEL, FPGA2CPU())
+			map(ANY_KERNEL -> UUT, CPU2FPGA())
+			map(UUT -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("StdDevTest")
