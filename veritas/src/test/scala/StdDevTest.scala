@@ -62,9 +62,9 @@ object StdDevTest extends App {
 			//	stdio.printf("\n")
 			//}
 			count += 1
-			if(count == pixels * nums * 10) {
-				stdio.exit(0)
-			}
+			//if(count == pixels * nums * 10) {
+			//	stdio.exit(0)
+			//}
 			//stdio.exit(0)
 		}
 
