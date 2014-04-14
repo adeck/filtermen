@@ -29,8 +29,8 @@ object RLE_test2 extends App {
 	
 	val Print = new Kernel("Print") {
 		val x0 = input(UNSIGNED16)
-		stdio.printf(" %u \n", x0)
-		stdio.exit(0)
+	//	stdio.printf(" %u \n", x0)
+	//	stdio.exit(0)
 	}	
 
 	val UUT = new RunLengthEncode("RLE")
