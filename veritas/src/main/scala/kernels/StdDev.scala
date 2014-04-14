@@ -27,6 +27,7 @@ class StdDev(_name:String) extends Kernel(_name:String)
 	val means = local(Vector(FLOAT32, 1600))
 	val stdDevs = local(Vector(FLOAT32, 1600))
 	val temp = local(FLOAT32, 0)
+	val tempData = local(UNSIGNED16, 0)
 
 	val state = local(UNSIGNED8, 0)
 
@@ -49,7 +50,8 @@ class StdDev(_name:String) extends Kernel(_name:String)
 			if (count <= outputCount) {
 				i = 0
 				while (i < 1600) {
-					temp = cast(pixelData, FLOAT32)
+					tempData = pixelData
+					temp = cast(tempData, FLOAT32)
 					stdDevs(i) += ((temp - means(i)) * (temp - means(i)))
 					i += 1
 				}
