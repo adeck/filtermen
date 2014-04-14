@@ -8,7 +8,7 @@ object MeanTest extends App {
 	val pixels = 10
 
 		val Random = new Kernel("Random") {
-			val y0 = output(UNSIGNED32)
+			val y0 = output(UNSIGNED16)
 
 			val iterations = config(UNSIGNED32, 'iterations, pixels * 20000)
 			y0 = stdio.rand() % 100
