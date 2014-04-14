@@ -27,6 +27,7 @@ class Mean(_name:String) extends Kernel(_name:String)
 	val state = local(UNSIGNED32, 0)
 	val means = local(Vector(FLOAT32, 1600))
 	val temp = local(FLOAT32, 0)
+	val tempData = local(UNSIGNED16, 0) //holds pixelData for cast
 
 	val i = local(UNSIGNED32, 0)
 
@@ -46,7 +47,8 @@ class Mean(_name:String) extends Kernel(_name:String)
 				i = 0
 				while (i < 1600) {
 					temp = means(i) * count
-					temp += cast(pixelData, FLOAT32)
+					tempData = pixelData
+					temp += cast(tempData, FLOAT32)
 					means(i) = temp / count
 					i += 1
 				}
