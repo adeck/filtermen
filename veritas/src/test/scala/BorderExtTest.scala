@@ -42,7 +42,7 @@ object BorderExtTest extends App {
 				stdio.printf("\t")
 			}
 			count += 1
-			stdio.exit(0)
+		//	stdio.exit(0)
 		}
 
 		val app = new Application {
