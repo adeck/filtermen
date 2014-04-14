@@ -20,7 +20,7 @@ object BorderExtTest extends App {
 		val UUT = new BorderExt("BorderExt")
 
 		val Print = new Kernel("Print") {
-			val x0 = input(UNSIGNED32) 
+			val x0 = input(UNSIGNED16) 
 
 			val width = config(UNSIGNED32, 'width, 42)
 			val height = config(UNSIGNED32, 'height, 42)
