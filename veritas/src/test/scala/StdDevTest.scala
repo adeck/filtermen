@@ -9,8 +9,8 @@ object StdDevTest extends App {
 	val nums = 1000
 
 		val RandomReader = new Kernel("RandomReader") {
-			//val y0 = output(FLOAT32)
-			val y1 = output(UNSIGNED32)
+			val y0 = output(FLOAT32)
+			val y1 = output(UNSIGNED16)
 
 			val iterations = config(UNSIGNED32, 'iterations, pixels * 10 * nums)
 			val i = local(UNSIGNED32, 0)
@@ -19,7 +19,7 @@ object StdDevTest extends App {
 			val temp = local(SIGNED32)
 			
 			if(fd == 0) {
-				fd = stdio.fopen("../RandomNumbers.txt", "r")
+				fd = stdio.fopen("./RandomNumbers.txt", "r")
 				if(fd == 0) {
 					stdio.printf("ERROR: could not open %s\n", "RandomNumbers.txt")
 					stdio.exit(-1)
@@ -36,13 +36,13 @@ object StdDevTest extends App {
 			}
 			if(iterations > 0) {
 				iterations -= 1
-				/*if(iterations % nums == 0) {
+				if(iterations % nums == 0) {
 					i = 0
 					while(i < pixels) {
 						y0 = 60
 						i += 1
 					}
-				}*/
+				}
 			} else {
 				stop
 			}
@@ -57,12 +57,15 @@ object StdDevTest extends App {
 			val temp = local(FLOAT32, 0)
 
 			temp = x0
-			stdio.printf("Pixel %u:\t%.2f\n", count % pixels, temp)
-			if(count % pixels == (pixels - 1)) {
-				stdio.printf("\n")
-			}
+			//stdio.printf("Pixel %u:\t%.2f\n", count % pixels, temp)
+			//if(count % pixels == (pixels - 1)) {
+			//	stdio.printf("\n")
+			//}
 			count += 1
-			stdio.exit(0)
+			if(count == pixels * nums * 10) {
+				stdio.exit(0)
+			}
+			//stdio.exit(0)
 		}
 
 		val app = new Application {
@@ -73,10 +76,10 @@ object StdDevTest extends App {
 			//val newWidth = 7
 			//val newHeight = 7
 			val random = RandomReader()
-			val stdDev = UUT(random)
+			val stdDev = UUT(random(0), random(1))
 			Print(stdDev)
-			map(ANY_KERNEL -> UUT, CPU2FPGA())
-			map(UUT -> ANY_KERNEL, FPGA2CPU())
+			//map(ANY_KERNEL -> UUT, CPU2FPGA())
+			//map(UUT -> ANY_KERNEL, FPGA2CPU())
 		}
 
 		app.emit("StdDevTest")
