@@ -18,6 +18,6 @@ class AoP(_name:String) extends Kernel(_name:String)
 	t2 = t1*t1*t1
 	t3 = t2*t1*t1/5
 	t2 = t2/3
-	dataOut = (t1 - t2 + t3) >> 2
+	dataOut = (t1 - t2 + t3)/2
 }	
 
