@@ -18,7 +18,7 @@ object RLE_test2 extends App {
 			y0 = i
 		}
 
-		if(i < iter) {
+		if(i <= iter) {
 			i+=1
 		}
 		
