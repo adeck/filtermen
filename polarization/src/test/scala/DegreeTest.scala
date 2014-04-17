@@ -35,8 +35,8 @@ object DegreeTest extends App {
 		val num = NumSequence()
 		val encoded = UUT(num)
 		Print(encoded)
-	//	map(ANY_KERNEL -> UUT, CPU2FPGA())
-	//	map(UUT -> ANY_KERNEL, FPGA2CPU())
+		map(ANY_KERNEL -> UUT, CPU2FPGA())
+		map(UUT -> ANY_KERNEL, FPGA2CPU())
 
 	}
 }
