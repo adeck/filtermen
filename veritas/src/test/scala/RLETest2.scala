@@ -9,7 +9,7 @@ object RLE_test2 extends App {
 		val iter = local(UNSIGNED16, 1600)	
 		val y0 = output (UNSIGNED16)
 
-		val i = local(UNSIGNED16, 0)
+		val i = local(UNSIGNED16, 1)
 
 		if(i < 20 || i>30) {
 			y0= 0
@@ -18,7 +18,7 @@ object RLE_test2 extends App {
 			y0 = i
 		}
 
-		if(i <= iter) {
+		if(i < iter) {
 			i+=1
 		}
 		
