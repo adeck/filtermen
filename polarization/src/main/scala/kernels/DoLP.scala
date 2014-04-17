@@ -4,9 +4,11 @@ import scalapipe.dsl._
 
 class DoLP(_name:String) extends Kernel(_name:String)
 {
-	val s0 = input(FLOAT32)
-	val s1 = input(FLOAT32)
-	val s2 = input(FLOAT32)
+	val parms = input(Vector(FLOAT32, 4))
+	val s0 = local(FLOAT32, parms(0))
+	val s1 = local(FLOAT32, parms(1))
+	val s2 = local(FLOAT32, parms(2))
+	
 
 	val dataOut = output(FLOAT32)
 
