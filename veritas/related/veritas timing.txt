@@ -1,0 +1,3 @@
+RLE_test2: 6 cycles / pixel
+BorderTest: 6 cycles / pixel
+PrimaryFilter: 108 cycles / pixel
