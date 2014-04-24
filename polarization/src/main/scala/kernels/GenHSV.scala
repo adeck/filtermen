@@ -2,6 +2,8 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
+//input from: Combine
+//output to: HSVtoRGB
 class GenHSV(_name:String) extends Kernel(_name:String)
 {
 	//parms(0) = intensity
