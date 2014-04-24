@@ -7,7 +7,7 @@ class GenHSV(_name:String) extends Kernel(_name:String)
 	//parms(0) = intensity
 	//parms(1) = degree 
 	//parms(2) = angle
-	val parms = input(Vector(Float32, 3))
+	val parms = input(Vector(FLOAT32, 3))
 	val dataOut = output(Vector(FLOAT32, 3))
 	val temp = local(Vector(FLOAT32,3))
 
@@ -23,7 +23,7 @@ class GenHSV(_name:String) extends Kernel(_name:String)
 	else {
 		temp(1) = parms(1)
 	}
-	if(parms(2) > 179)
+	if(parms(2) > 179){
 		temp(2) = 179
 	}
 	else {
