@@ -2,6 +2,8 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
+//input from: Combine
+//output to: HSVtoRGB
 class GenHSV(_name:String) extends Kernel(_name:String)
 {
 	//parms(0) = intensity
@@ -23,7 +25,13 @@ class GenHSV(_name:String) extends Kernel(_name:String)
 	else {
 		temp(1) = parms(1)
 	}
+<<<<<<< HEAD
 	if(parms(2) > 179){
+=======
+	parms(2)+= 1.58
+	parms(2)*= 57
+	if(parms(2) > 179)
+>>>>>>> 1b0ed775d3358d344f9b780a3fbc5e95b0b2f137
 		temp(2) = 179
 	}
 	else {

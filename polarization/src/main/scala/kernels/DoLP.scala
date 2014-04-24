@@ -2,6 +2,8 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
+//inputs from: Stokes Parameters
+//outputs to: Combine
 class DoLP(_name:String) extends Kernel(_name:String)
 {
 	val parms = input(Vector(FLOAT32, 4))
