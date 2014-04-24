@@ -23,6 +23,8 @@ class GenHSV(_name:String) extends Kernel(_name:String)
 	else {
 		temp(1) = parms(1)
 	}
+	parms(2)+= 1.58
+	parms(2)*= 57
 	if(parms(2) > 179)
 		temp(2) = 179
 	}
