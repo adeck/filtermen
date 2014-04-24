@@ -2,6 +2,8 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
+//Inputs from: Stokes Parameters
+//Outputs to: Combine
 class AoP(_name:String) extends Kernel(_name:String)
 {
 	//s0 = parms(0), s1 = parms(1), s2 = parms(2)
