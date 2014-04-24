@@ -2,9 +2,11 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
+//Gets input from: Intensity, DoLP, AoP
+//Sends output to: GenHSV
+
 class Combine(_name:String) extends Kernel(_name:String)
 {
-	//Combines intensity, degree, and angle into a vector, to be sent to GenHSV
 	val intensity = input(FLOAT32)
 	val degree = input(FLOAT32)
 	val angle = input(FLOAT32)
