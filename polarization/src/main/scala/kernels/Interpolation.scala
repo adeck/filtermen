@@ -2,15 +2,15 @@ package polarization.kernels
 import scalapipe._
 import scalapipe.dsl._
 
-class Interpolation(_name:String) extends Kernel(_name:String)
+class Interpolation(_name:String,width:Int,height:Int) extends Kernel(_name:String)
 {
 	val typ = UNSIGNED32
 
 	val dataIn = input(typ)
 	val dataOut = output(Vector(FLOAT32, 4))
 
-	val width = config(UNSIGNED32, 'width, 10)
-	val height = config(UNSIGNED32, 'height, 10)
+	//val width = config(UNSIGNED32, 'width, 10)
+	//val height = config(UNSIGNED32, 'height, 10)
 
 	val x = local(UNSIGNED32, 0)
 	val y = local(UNSIGNED32, 0)
@@ -21,9 +21,9 @@ class Interpolation(_name:String) extends Kernel(_name:String)
 
 	val tempVector = local(Vector(FLOAT32, 4))
 
-	val rowQueue1 = local(Vector(typ, 12))
-	val rowQueue2 = local(Vector(typ, 12))
-	val rowQueue3 = local(Vector(typ, 12))
+	val rowQueue1 = local(Vector(typ, width + 2))
+	val rowQueue2 = local(Vector(typ, width + 2))
+	val rowQueue3 = local(Vector(typ, width + 2))
 
 	val state = local(UNSIGNED8, 0)
 
