@@ -32,7 +32,7 @@ class HSVtoRGB(_name:String) extends Kernel(_name:String)
   S = hsv(1)
   V = hsv(2)
   H /= 60
-  i = UNSIGNED16(H)
+  i = cast(H, UNSIGNED16)
   f = H - i
   p = V * (1 - S)
   q = V * (1 - S * f)

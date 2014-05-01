@@ -12,9 +12,9 @@ object HSVtoRGBTest extends App {
 		val y0 = output (Vector(typ, 3))
     val y_tmp = local (Vector(typ, 3))
     
-    y_tmp(0) = typ(stdio.rand())
-    y_tmp(1) = typ(stdio.rand())
-    y_tmp(2) = typ(stdio.rand())
+    y_tmp(0) = cast(stdio.rand(), typ)
+    y_tmp(1) = cast(stdio.rand(), typ)
+    y_tmp(2) = cast(stdio.rand(), typ)
 		if (i < iter) 
     {
 			i+=1
