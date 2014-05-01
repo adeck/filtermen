@@ -7,14 +7,14 @@ object HSVtoRGBTest extends App {
 
   val typ = FLOAT32
 	val Random = new Kernel("Random") {
-		val iter = local(UNSIGNED16, 100 * 20 * 20)	
-    val i = local(UNSIGNED16, 0)
+		val iter = local(UNSIGNED32, 100 * 20 * 20)	
+    val i = local(UNSIGNED32, 0)
 		val y0 = output (Vector(typ, 3))
     val y_tmp = local (Vector(typ, 3))
     
-    y_tmp(0) = stdio.rand()
-    y_tmp(1) = stdio.rand()
-    y_tmp(2) = stdio.rand()
+    y_tmp(0) = typ(stdio.rand())
+    y_tmp(1) = typ(stdio.rand())
+    y_tmp(2) = typ(stdio.rand())
 		if (i < iter) 
     {
 			i+=1
@@ -27,10 +27,17 @@ object HSVtoRGBTest extends App {
 	}
 
 	val UUT = new HSVtoRGB("HSVtoRGB")
+  val Dummy = new Kernel("Dummy")
+  {
+    val x = input(Vector(typ, 3))
+    val tmp = local(Vector(typ, 3))
+    tmp = x
+  }
 	
 	val app = new Application {
 		val random = Random()
-	  UUT(random)
+	  val rgb = UUT(random)
+    Dummy(rgb)
     map(ANY_KERNEL -> UUT, CPU2FPGA())
     map(UUT -> ANY_KERNEL, FPGA2CPU())
 	}
